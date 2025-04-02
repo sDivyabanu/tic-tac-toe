@@ -3,10 +3,6 @@ import Board from "./Board";
 import { calculateWinner, aiMove } from "./gameLogic";
 import CanvasBackground from './CanvasBackground.js';
 
-
-
-
-
 function App() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
@@ -23,18 +19,20 @@ function App() {
       return;
     }
 
-    // newSquares[i] = isXNext ? "X" : "O";
+    setIsXNext(false);
 
-    // setSquares(newSquares);
-    // setIsXNext(!isXNext);
+    // Delay the AI move by 2fea seconds
+    setTimeout(() => handleAiMove(newSquares), 1000);
+  };
 
+  const handleAiMove = (newSquares) => {
     const aiMoveIndex = aiMove(newSquares);
 
-    // const aiMoveIndex = aiMove(newSquares);
+    
     if (aiMoveIndex !== -1) {
       newSquares[aiMoveIndex] = "O";
-      setSquares(newSquares);
-      // setIsXNext(true);
+      setSquares([...newSquares]);
+      
       if (calculateWinner(newSquares)) {
         setIsXNext(false); // End the game
         return;
@@ -42,6 +40,7 @@ function App() {
     }
 
     setIsXNext(true);
+
   };
 
   const handleRestart = () => {
@@ -51,10 +50,13 @@ function App() {
   };
 
   const winner = calculateWinner(squares);
+  const isDraw = squares.every(square => square !== null);
   const status = winner
     ? `Winner: ${winner}`
-    : `Next player: ${isXNext ? "X" : "O"}`;
-
+    : isDraw
+    ? "It's a draw"
+    // : `Next player: ${isXNext ? "X" : "O"}`;
+    : `${isXNext ? "Your Move, Play X" : "Ai's move"}`;
   return (
     <div className="relative min-h-screen">
       <CanvasBackground /> 
